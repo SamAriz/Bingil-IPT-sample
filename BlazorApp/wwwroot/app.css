@@ -61,3 +61,24 @@
     object-fit: cover;      /* Keeps the picture well-cropped */
     margin-bottom: 1.5rem;
 }
+/* Navbar Color */
+.top-row {
+    background-color: #0a2540 !important;   /* Deep Navy */
+    color: white !important;
+}
+
+.top-row a {
+    color: white !important;
+}
+
+.top-row a:hover {
+    color: #60a5fa !important;
+}
+.profile-container {
+    background-color: #1e2937;
+}
+
+.main-content {
+    background-color: #334155;
+    color: white;
+}
