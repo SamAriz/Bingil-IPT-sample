@@ -14,20 +14,21 @@
     </div>
 
     <div class="menu-grid">
-        @foreach (var item in MenuItems)
+        @for (int index = 0; index < MenuItems.Count; index++)
         {
-            <div class="menu-item">
+            var item = MenuItems[index];
+            <div class="menu-item" @key="item">
                 <img src="/img/product.jpg" width="100" height="100" />
                 <h3>@item.Name</h3>
                 <p class="price">₱@item.Price</p>
 
                 <div class="quantity-control">
-                    <button type="button" class="qty-btn" @onclick="() => ChangeQuantity(item, -1)">−</button>
+                    <button type="button" class="qty-btn" @onclick="() => ChangeQuantity(index, -1)">−</button>
                     <span class="qty">@item.Quantity</span>
-                    <button type="button" class="qty-btn" @onclick="() => ChangeQuantity(item, 1)">+</button>
+                    <button type="button" class="qty-btn" @onclick="() => ChangeQuantity(index, 1)">+</button>
                 </div>
 
-                <button type="button" class="add-to-cart-btn" @onclick="() => AddToCart(item)" disabled="@(item.Quantity == 0)">
+                <button type="button" class="add-to-cart-btn" @onclick="() => AddToCart(index)" disabled="@(item.Quantity == 0)">
                     Add ₱@(item.Subtotal)
                 </button>
             </div>
@@ -49,25 +50,27 @@
         };
     }
 
-    private void ChangeQuantity(MenuItem item, int change)
+    private void ChangeQuantity(int index, int change)
     {
-        item.Quantity = Math.Max(0, item.Quantity + change);
-        StateHasChanged();
+        if (index < 0 || index >= MenuItems.Count)
+        {
+            return;
+        }
+
+        MenuItems[index].Quantity = Math.Max(0, MenuItems[index].Quantity + change);
     }
 
-    private void AddToCart(MenuItem item)
+    private void AddToCart(int index)
     {
+        if (index < 0 || index >= MenuItems.Count)
+        {
+            return;
+        }
+
+        var item = MenuItems[index];
         if (item.Quantity > 0)
         {
-            var selectedItem = new MenuItem
-            {
-                Name = item.Name,
-                Price = item.Price,
-                Quantity = item.Quantity,
-                Image = item.Image
-            };
-
-            NavigationManager.NavigateTo($"/lifecycle/summary?name={Uri.EscapeDataString(selectedItem.Name)}&price={selectedItem.Price}&quantity={selectedItem.Quantity}");
+            NavigationManager.NavigateTo($"/lifecycle/summary?name={Uri.EscapeDataString(item.Name)}&price={item.Price}&quantity={item.Quantity}");
         }
     }
 
