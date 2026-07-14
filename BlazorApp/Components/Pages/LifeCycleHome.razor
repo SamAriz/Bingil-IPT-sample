@@ -1,0 +1,31 @@
+@page "/lifecycle"
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager NavigationManager
+
+<PageTitle>Blazor Life Cycle Sample</PageTitle>
+
+<div class="welcome-screen">
+    <div class="logo">
+        <h1>Blazor Life Cycle Sample</h1>
+        <p>Self-Service Kiosk</p>
+    </div>
+
+    <h2>What do you want?</h2>
+
+    <div class="order-options">
+        <button class="option-card" @onclick="StartOrder">
+            <div class="icon">✨</div>
+            <h3>START</h3>
+            <p>Click here to open the sample app</p>
+        </button>
+    </div>
+
+    <div class="mt-4">
+        <button class="btn btn-secondary" @onclick="GoHome">Back to Profile</button>
+    </div>
+</div>
+
+@code {
+    private void StartOrder() => NavigationManager.NavigateTo("/lifecycle/menu");
+    private void GoHome() => NavigationManager.NavigateTo("/");
+}
