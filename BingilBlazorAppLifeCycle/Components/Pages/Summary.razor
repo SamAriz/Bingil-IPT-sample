@@ -1,8 +1,6 @@
 ﻿@page "/summary"
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
-@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Routing
 
 <PageTitle>Order Summary</PageTitle>
 
@@ -10,30 +8,28 @@
     <h1>Your Order Summary</h1>
 
     <div class="order-list">
-        @foreach (var item in Cart)
+        @foreach (var item in MenuItems)
         {
-            <div class="summary-item">
-                <span>@item.Quantity x @item.Name</span>
-                <span>₱@(item.Price * item.Quantity)</span>
-            </div>
+            if (item.Quantity > 0)
+            {
+                <div class="summary-item">
+                    <span>@item.Quantity x @item.Name</span>
+                    <span>₱@(item.Subtotal)</span>
+                </div>
+            }
         }
     </div>
 
     <div class="total-section">
         <div class="total-row">
             <strong>Total Items</strong>
-            <strong>@TotalQuantity</strong>
+            <strong>@TotalItems</strong>
         </div>
         <div class="total-row grand-total">
             <strong>Total Amount</strong>
-            <strong>₱@TotalPrice.ToString("N2")</strong>
+            <strong>₱@TotalAmount.ToString("N2")</strong>
         </div>
     </div>
-
-    @if (!string.IsNullOrWhiteSpace(ConfirmationMessage))
-    {
-        <div class="alert alert-success mt-3">@ConfirmationMessage</div>
-    }
 
     <div class="actions">
         <button class="btn btn-secondary" @onclick="GoBack">← Back to Menu</button>
@@ -42,41 +38,32 @@
 </div>
 
 @code {
-    [SupplyParameterFromQuery]
-    public string? Name { get; set; }
+    private List<MenuItem> MenuItems = new();
 
-    [SupplyParameterFromQuery]
-    public decimal? Price { get; set; }
+    private int TotalItems => MenuItems.Sum(x => x.Quantity);
+    private decimal TotalAmount => MenuItems.Sum(x => x.Subtotal);
 
-    [SupplyParameterFromQuery]
-    public int? Quantity { get; set; }
-
-    private List<CartItem> Cart => new()
+    protected override void OnInitialized()
     {
-        new CartItem
+        // For now, use sample data. Later we can share real cart
+        MenuItems = new List<MenuItem>
         {
-            Name = Name ?? "Unknown",
-            Price = Price ?? 0,
-            Quantity = Quantity ?? 0
-        }
-    };
-
-    private int TotalQuantity => Cart.Sum(x => x.Quantity);
-    private decimal TotalPrice => Cart.Sum(x => x.Price * x.Quantity);
-    private string ConfirmationMessage { get; set; } = string.Empty;
+            new MenuItem { Name = "Kayo ba?", Price = 99, Quantity = 2 }
+        };
+    }
 
     private void GoBack() => NavigationManager.NavigateTo("/menu");
 
     private void ConfirmOrder()
     {
-        ConfirmationMessage = $"Order confirmed! Total: ₱{TotalPrice:N2}";
-        NavigationManager.NavigateTo("/payment");
+        Console.WriteLine($"Order Confirmed! Total: ₱{TotalAmount}");
     }
 
-    public class CartItem
+    public class MenuItem
     {
         public string Name { get; set; } = "";
         public decimal Price { get; set; }
-        public int Quantity { get; set; }
+        public int Quantity { get; set; } = 0;
+        public decimal Subtotal => Price * Quantity;
     }
 }

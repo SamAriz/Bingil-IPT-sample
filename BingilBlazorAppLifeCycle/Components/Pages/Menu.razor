@@ -1,15 +1,13 @@
 ﻿@page "/menu"
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
-@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Routing
 
 <PageTitle>Ano imo?</PageTitle>
 
 <div class="kiosk-menu">
     <div class="top-bar">
         <button class="back-btn" @onclick="GoBack">← Back</button>
-        <h2>Choose</h2>
+        <h2>Choose Your Order</h2>
         <div class="cart-info">
             Items: @TotalItems | ₱@TotalAmount.ToString("N2")
         </div>
@@ -19,9 +17,7 @@
         @foreach (var item in MenuItems)
         {
             <div class="menu-item">
-                <img src="/img/product.jpg"
-                width="100"
-                height="100" />
+                <img src="@item.Image" width="120" height="120" />
                 <h3>@item.Name</h3>
                 <p class="price">₱@item.Price</p>
 
@@ -49,7 +45,8 @@
     {
         MenuItems = new List<MenuItem>
         {
-            new MenuItem { Name = "Kayo ba?", Price = 99, Image = "/img/product.jpg" }
+            new MenuItem { Name = "Kayo ba?", Price = 99, Image = "/img/product.jpg" },
+            // Add more items here
         };
     }
 
@@ -63,15 +60,8 @@
     {
         if (item.Quantity > 0)
         {
-            var selectedItem = new MenuItem
-            {
-                Name = item.Name,
-                Price = item.Price,
-                Quantity = item.Quantity,
-                Image = item.Image
-            };
-
-            NavigationManager.NavigateTo($"/summary?name={Uri.EscapeDataString(selectedItem.Name)}&price={selectedItem.Price}&quantity={selectedItem.Quantity}");
+            // For now, just go to summary (you can improve this later with real cart)
+            NavigationManager.NavigateTo($"/summary");
         }
     }
 
